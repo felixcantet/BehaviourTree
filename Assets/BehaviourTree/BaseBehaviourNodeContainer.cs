@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,12 +11,19 @@ namespace BehaviourTree
     [System.Serializable]
     public abstract class BaseBehaviourNodeContainer : BaseBehaviourNode
     {
-        private List<BaseBehaviourNode> nodes = new List<BaseBehaviourNode>();
+        [SerializeField] protected List<BaseBehaviourNode> nodes = new List<BaseBehaviourNode>();
 
         public List<BaseBehaviourNode> Nodes
         {
             get { return this.nodes; }
             set { this.nodes = value; }
         }
+
+        public BaseBehaviourNodeContainer(Action<bool> callback) : base(callback)
+        {
+            
+        }
+        
+        
     }
 }
