@@ -4,16 +4,92 @@ using UnityEngine;
 using UnityEngine.AI;
 using System;
 using System.Linq;
-
+using BehaviourTree;
 public class IAPatrolController : MonoBehaviour
 {
-    float visionMaxDistance;
-    int coneAngle = 20;
-    int coneStep = 1;
-    public NavMeshAgent agent;
-    Transform target;
-    float rotationSpeed = 10.0f;
-    float attackRange;
+    public BehaviourTree.BehaviourTree tree;
+
+
+    [SerializeField] float visionMaxDistance = 15;
+    [SerializeField] int coneAngle = 20;
+    [SerializeField] int coneStep = 1;
+    [SerializeField] public NavMeshAgent agent;
+    [SerializeField] Transform target;
+    [SerializeField] float rotationSpeed = 10.0f;
+    [SerializeField] float attackRange = 3;
+
+
+    private void Awake()
+    {
+        BehaviourSelectorNode entry = new BehaviourSelectorNode("Entry Node");
+        this.tree = new BehaviourTree.BehaviourTree(entry);
+        var condition = new BehaviourConditionNode(() =>
+        {
+            Debug.Log("Run Has Target Condition");
+            return !this.HasTarget();
+        }, name="Has Target Condition");
+
+        var searchSequence = new BehaviourSequenceNode(name = "Search Sequence");
+
+        var searchAction = new BehaviourActionNode(() =>
+        {
+            this.DetectPlayer();
+            Debug.Log("Detect Player Action");
+            return this.target != null;
+        }, "Search Action");
+
+        
+
+        entry.Add(searchSequence);
+        searchSequence.Add(condition);
+        searchSequence.Add(searchAction);
+
+        var moveSequence = new BehaviourSequenceNode(name = "Move Sequence");
+        entry.Add(moveSequence);
+        var hasTarget = new BehaviourConditionNode(() =>
+        {
+            return this.HasTarget();
+        }, name = "Has Target");
+        moveSequence.Add(hasTarget);
+        var moveToAction = new BehaviorForceSuccess(() =>
+        {
+            this.agent.enabled = true;
+            this.MoveTo(this.target.position);
+            return true;
+        });
+        var invertInRangeCondition = new BehaviourConditionNode(() =>
+        {
+            return !this.IsInAttackRange();
+        }, name = "Stop Move");
+        moveSequence.Add(moveToAction);
+        moveSequence.Add(invertInRangeCondition);
+
+        var attackSequence = new BehaviourSequenceNode("Attack Sequence");
+        entry.Add(attackSequence);
+        var isInRangeCondition = new BehaviourConditionNode(() => { 
+            return this.IsInAttackRange(); }, 
+            name = "In range Condition");
+        attackSequence.Add(isInRangeCondition);
+        var attackAction = new BehaviourActionNode(() =>
+        {
+            this.agent.enabled = false;
+            this.Attack();
+
+            return true;
+        }, name = "Attack Action");
+        attackSequence.Add(attackAction);
+    }
+
+    private void Update()
+    {
+        //this.tree.InitGraph();
+        this.tree.LaunchGraph();
+    }
+
+    bool HasTarget()
+    {
+        return this.target != null;
+    }
 
     /// <summary>
     /// cast rays in a cone defined by [-coneAngle, +coneAngle] around forward axis
@@ -125,5 +201,6 @@ public class IAPatrolController : MonoBehaviour
         // TODO 
         // Attack Behaviour
         // Set Animation
+        Debug.Log("Attack");
     }
 }

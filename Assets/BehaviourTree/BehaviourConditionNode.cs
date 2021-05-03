@@ -10,7 +10,7 @@ namespace BehaviourTree
     {
         public override void OnStart()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public override void OnEnter()

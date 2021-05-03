@@ -60,7 +60,7 @@ namespace BehaviourTree
             currentNode.OnEnter();
             var result = currentNode.Process();
             
-            Assert.AreEqual(result, NodeState.Failure, "Result is failure in Behavior Tree");
+            Assert.AreNotEqual(result, NodeState.Failure, "Result is failure in Behavior Tree");
             
             if(!currentNode.State.Equals(NodeState.Running))
                 ResetGraph();
