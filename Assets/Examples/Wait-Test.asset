@@ -213,13 +213,14 @@ MonoBehaviour:
   exposedParameters: []
   serializedParameterList: []
   stickyNotes: []
-  position: {x: 57, y: 77, z: 0}
-  scale: {x: 0.7561437, y: 0.7561437, z: 1}
+  position: {x: -136, y: 114, z: 0}
+  scale: {x: 0.49717674, y: 0.49717674, z: 1}
   references:
     version: 1
     00000000:
       type: {class: StartNode, ns: NodeGraphProcessor.Examples, asm: Assembly-CSharp}
       data:
+        nodeCustomName: 
         GUID: 66ff3cd5-91ce-49c5-a4e9-497aeffce220
         computeOrder: 0
         position:
@@ -234,6 +235,7 @@ MonoBehaviour:
     00000001:
       type: {class: ConsoleNode, ns: NodeGraphProcessor.Examples, asm: Assembly-CSharp}
       data:
+        nodeCustomName: 
         GUID: 8d6341ff-17d1-4821-bd6d-b19223141e77
         computeOrder: 1
         position:
@@ -250,6 +252,7 @@ MonoBehaviour:
     00000002:
       type: {class: ConsoleNode, ns: NodeGraphProcessor.Examples, asm: Assembly-CSharp}
       data:
+        nodeCustomName: 
         GUID: 90a6b4a7-fd45-4443-84be-a8e7d00c73cd
         computeOrder: 3
         position:
@@ -266,6 +269,7 @@ MonoBehaviour:
     00000003:
       type: {class: WaitNode, ns: NodeGraphProcessor.Examples, asm: Assembly-CSharp}
       data:
+        nodeCustomName: 
         GUID: 5bb82796-a068-40bb-8eda-ff53cd940f70
         computeOrder: 2
         position:
@@ -281,6 +285,7 @@ MonoBehaviour:
     00000004:
       type: {class: ConsoleNode, ns: NodeGraphProcessor.Examples, asm: Assembly-CSharp}
       data:
+        nodeCustomName: 
         GUID: 45bfbacc-ef7f-48b1-ad14-7a1d3b318199
         computeOrder: 4
         position:
@@ -297,6 +302,7 @@ MonoBehaviour:
     00000005:
       type: {class: WaitNode, ns: NodeGraphProcessor.Examples, asm: Assembly-CSharp}
       data:
+        nodeCustomName: 
         GUID: 3eb22d66-d3a1-4ddf-af8e-0eff74fdf9b9
         computeOrder: 5
         position:
@@ -312,6 +318,7 @@ MonoBehaviour:
     00000006:
       type: {class: ConsoleNode, ns: NodeGraphProcessor.Examples, asm: Assembly-CSharp}
       data:
+        nodeCustomName: 
         GUID: 5131f6bd-4499-4830-948f-66a49e55d585
         computeOrder: 6
         position:
@@ -328,6 +335,7 @@ MonoBehaviour:
     00000007:
       type: {class: ConsoleNode, ns: NodeGraphProcessor.Examples, asm: Assembly-CSharp}
       data:
+        nodeCustomName: 
         GUID: 411c2520-76da-4b5f-b07f-66101ace2921
         computeOrder: 7
         position:
@@ -344,6 +352,7 @@ MonoBehaviour:
     00000008:
       type: {class: WaitNode, ns: NodeGraphProcessor.Examples, asm: Assembly-CSharp}
       data:
+        nodeCustomName: 
         GUID: 98722611-d93a-49c1-af52-a4abecc88578
         computeOrder: 8
         position:
@@ -359,6 +368,7 @@ MonoBehaviour:
     00000009:
       type: {class: ConsoleNode, ns: NodeGraphProcessor.Examples, asm: Assembly-CSharp}
       data:
+        nodeCustomName: 
         GUID: d4429a35-a783-41d1-bd49-7f5a210c7356
         computeOrder: 9
         position:
@@ -375,6 +385,7 @@ MonoBehaviour:
     0000000A:
       type: {class: ConsoleNode, ns: NodeGraphProcessor.Examples, asm: Assembly-CSharp}
       data:
+        nodeCustomName: 
         GUID: 973f3f45-2e71-4d09-82c4-2f99ce8f8219
         computeOrder: 10
         position:
@@ -391,6 +402,7 @@ MonoBehaviour:
     0000000B:
       type: {class: WaitFrameNode, ns: NodeGraphProcessor.Examples, asm: Assembly-CSharp}
       data:
+        nodeCustomName: 
         GUID: e4178912-f9e6-4a51-888f-a665cf7f3d79
         computeOrder: 11
         position:
@@ -406,6 +418,7 @@ MonoBehaviour:
     0000000C:
       type: {class: ConsoleNode, ns: NodeGraphProcessor.Examples, asm: Assembly-CSharp}
       data:
+        nodeCustomName: 
         GUID: f5157e92-3385-4a70-8b28-e033f24a8ea4
         computeOrder: 12
         position:
@@ -422,6 +435,7 @@ MonoBehaviour:
     0000000D:
       type: {class: ConsoleNode, ns: NodeGraphProcessor.Examples, asm: Assembly-CSharp}
       data:
+        nodeCustomName: 
         GUID: 6d5b9460-777f-42f7-8d40-cfb33d9cbc76
         computeOrder: 13
         position:
@@ -438,6 +452,7 @@ MonoBehaviour:
     0000000E:
       type: {class: WaitFrameNode, ns: NodeGraphProcessor.Examples, asm: Assembly-CSharp}
       data:
+        nodeCustomName: 
         GUID: ebae703f-1cc0-4629-a7fb-7705ab7a3355
         computeOrder: 14
         position:
@@ -453,6 +468,7 @@ MonoBehaviour:
     0000000F:
       type: {class: ConsoleNode, ns: NodeGraphProcessor.Examples, asm: Assembly-CSharp}
       data:
+        nodeCustomName: 
         GUID: 03313284-5841-4c58-b0ca-406ffd09c4f5
         computeOrder: 15
         position:
@@ -469,6 +485,7 @@ MonoBehaviour:
     00000010:
       type: {class: ConsoleNode, ns: NodeGraphProcessor.Examples, asm: Assembly-CSharp}
       data:
+        nodeCustomName: 
         GUID: d4084e8e-2cc4-4770-b5ac-6542dc4cde14
         computeOrder: 16
         position:
@@ -485,6 +502,7 @@ MonoBehaviour:
     00000011:
       type: {class: WaitFrameNode, ns: NodeGraphProcessor.Examples, asm: Assembly-CSharp}
       data:
+        nodeCustomName: 
         GUID: 4f5c6615-89b0-4b2d-84e5-00eb8ed02fa6
         computeOrder: 17
         position:
@@ -500,6 +518,7 @@ MonoBehaviour:
     00000012:
       type: {class: ConsoleNode, ns: NodeGraphProcessor.Examples, asm: Assembly-CSharp}
       data:
+        nodeCustomName: 
         GUID: 3f78d110-d8a1-41f0-b0f5-f9dffca143f2
         computeOrder: 18
         position:
@@ -516,6 +535,7 @@ MonoBehaviour:
     00000013:
       type: {class: ConsoleNode, ns: NodeGraphProcessor.Examples, asm: Assembly-CSharp}
       data:
+        nodeCustomName: 
         GUID: 1d05134c-ab0b-48e3-a59f-17565e1c012a
         computeOrder: 19
         position:
