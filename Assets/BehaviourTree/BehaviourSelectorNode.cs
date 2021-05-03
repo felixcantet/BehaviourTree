@@ -23,7 +23,8 @@ namespace BehaviourTree
 
         public override void OnExit()
         {
-            throw new NotImplementedException();
+            Debug.Log($"Selector {nodeName} On Exit()");
+            //throw new NotImplementedException();
         }
 
         public override void OnReset()
@@ -43,6 +44,9 @@ namespace BehaviourTree
                     this.state = currentExecutedNodeStateResult;
                     Debug.Log($"Selector {nodeName} : Success");
                     
+                    if(this.state != NodeState.Running)
+                        OnExit();
+                    
                     return this.state;
                 }
             }
@@ -51,6 +55,9 @@ namespace BehaviourTree
             
             Debug.LogWarning($"Selector {nodeName} : {this.state.ToString()}");
 
+            if(this.state != NodeState.Running)
+                OnExit();
+            
             return this.state;
         }
 

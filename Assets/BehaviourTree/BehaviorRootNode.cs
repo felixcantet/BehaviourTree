@@ -1,16 +1,22 @@
+﻿
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace BehaviourTree
 {
-    [System.Serializable]
-    public class BehaviourConditionNode : BaseBehaviourNode
+    public class BehaviorRootNode : BaseBehaviourNode
     {
+        public BehaviorRootNode(BaseBehaviourNode child) : base(null, "Root", child)
+        {
+            this.actionCallback = () => !child.Process().Equals(NodeState.Failure);
+        }
+
         public override void OnStart()
         {
-            throw new NotImplementedException();
+            
         }
 
         public override void OnEnter()
@@ -20,7 +26,7 @@ namespace BehaviourTree
 
         public override void OnExit()
         {
-            Debug.Log($"Action Node {nodeName} On Exit()");
+            Debug.Log($"{nodeName} On Exit()");
             //throw new NotImplementedException();
         }
 
@@ -32,15 +38,9 @@ namespace BehaviourTree
         public override NodeState Process()
         {
             this.state = actionCallback() ? NodeState.Success : NodeState.Failure;
-            
             if(this.state != NodeState.Running)
                 OnExit();
-            
             return this.state;
-        }
-
-        public BehaviourConditionNode(ActionBool callback, string nName = "node", BaseBehaviourNode child = null) : base(callback, nName, child)
-        {
         }
     }
 }

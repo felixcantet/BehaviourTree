@@ -1,13 +1,18 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace BehaviourTree
 {
-
-    public class BehaviourActionNode : BaseBehaviourNode
+    public class BehaviorForceSuccess : BaseBehaviourNode
     {
+        public BehaviorForceSuccess(ActionBool callback = null, string nName = "", BaseBehaviourNode child = null) : base(callback, "Force Success - " + nName, child)
+        {
+            
+        }
+
         public override void OnStart()
         {
             
@@ -20,7 +25,7 @@ namespace BehaviourTree
 
         public override void OnExit()
         {
-            Debug.Log($"Action Node {nodeName} On Exit()");
+            Debug.Log($"{nodeName} On Exit()");
             //throw new NotImplementedException();
         }
 
@@ -31,15 +36,10 @@ namespace BehaviourTree
 
         public override NodeState Process()
         {
-            this.state = actionCallback() ? NodeState.Success : NodeState.Failure;
-            if(this.state != NodeState.Running)
-                OnExit();
-            return this.state;
-        }
-
-        public BehaviourActionNode(ActionBool callback, string nName = "node", BaseBehaviourNode child = null) : base(callback, nName, child)
-        {
+            actionCallback();
             
+            OnExit();
+            return NodeState.Success;
         }
     }
 }

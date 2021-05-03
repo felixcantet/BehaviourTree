@@ -9,7 +9,7 @@ namespace BehaviourTree
     public class BehaviourTree
     {
         [SerializeField] private List<BaseBehaviourNode> nodes = new List<BaseBehaviourNode>();
-                
+        
         private BaseBehaviourNode entryPoint;
         private BaseBehaviourNode currentNode;
 
@@ -50,13 +50,18 @@ namespace BehaviourTree
          * - Node = node avec des process differents
          * - BT Toujours composé de Séquence et de sélector dans l'idée !
          * - Node "TimeOut" ==> au bout de N tick je stop l'action
+         *     --> Stocker un start time + avoir un pseudo timer dans le Tree
          * - Node Repeat ==> Repeat N fois
          */
         
-        public void Tick()
+        public void LaunchGraph()
         {
+            currentNode.OnEnter();
             var result = currentNode.Process();
+            
             Assert.AreEqual(result, NodeState.Failure, "Result is failure in Behavior Tree");
         }
+        
+        
     }
 }
