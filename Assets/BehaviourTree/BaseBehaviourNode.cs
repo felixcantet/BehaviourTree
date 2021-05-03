@@ -14,8 +14,11 @@ namespace BehaviourTree
         Success
     }
 
-    public delegate bool ActionBool();
-    
+    public delegate bool ActionBool(); // delegate = pointeur sur fonction ==> Bloquant
+    // Peut etre faire un event
+    // ==> public event MonDelegate callback;
+    // Peut etre hériter de IEnumerator ?
+    // 
     
     [System.Serializable]
     public abstract class BaseBehaviourNode

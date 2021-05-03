@@ -28,7 +28,7 @@ namespace BehaviourTree
                 n.OnStart();
             }
 
-            currentNode.Process();
+            LaunchGraph();
         }
 
         public void ResetGraph()
@@ -38,6 +38,7 @@ namespace BehaviourTree
                 n.OnReset();
 
             this.currentNode = this.entryPoint;
+            LaunchGraph();
         }
 
         /*
@@ -60,6 +61,9 @@ namespace BehaviourTree
             var result = currentNode.Process();
             
             Assert.AreEqual(result, NodeState.Failure, "Result is failure in Behavior Tree");
+            
+            if(!currentNode.State.Equals(NodeState.Running))
+                ResetGraph();
         }
         
         
