@@ -5,16 +5,58 @@ using UnityEngine;
 
 namespace BehaviourTree
 {
+    /// <summary>
+    /// Sequence node is like an OR
+    /// </summary>
     [System.Serializable]
     public class BehaviourSelectorNode : BaseBehaviourNodeContainer
     {
-        public override NodeState Process()
+        public override void OnStart()
         {
-            throw new System.NotImplementedException();
+            base.OnStart();
         }
 
-        public BehaviourSelectorNode(Action<bool> callback) : base(callback)
+        public override void OnEnter()
         {
+            this.state = NodeState.Running;
+        }
+
+        public override void OnExit()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void OnReset()
+        {
+            base.OnReset();
+        }
+        
+        public override NodeState Process()
+        {
+            NodeState currentExecutedNodeStateResult = this.state;
+            foreach (var n in nodes)
+            {
+                currentExecutedNodeStateResult = n.Process();
+                
+                if (currentExecutedNodeStateResult.Equals(NodeState.Success))
+                {
+                    this.state = currentExecutedNodeStateResult;
+                    Debug.Log($"Selector {nodeName} : Success");
+                    
+                    return this.state;
+                }
+            }
+            
+            this.state = currentExecutedNodeStateResult;
+            
+            Debug.LogWarning($"Selector {nodeName} : {this.state.ToString()}");
+
+            return this.state;
+        }
+
+        public BehaviourSelectorNode(string nName = "node", BaseBehaviourNode child = null) : base(nName, child)
+        {
+            
         }
     }
 }

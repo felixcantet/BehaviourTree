@@ -12,18 +12,24 @@ namespace BehaviourTree
         Running,
         Failure,
         Success
-
     }
 
+    public delegate bool ActionBool();
+    
+    
     [System.Serializable]
     public abstract class BaseBehaviourNode
     {
         #region Variables
-        [SerializeField] protected NodeState state;
-        [SerializeField] protected Action<bool> actionCallback;
+        [SerializeField] public BehaviourTree tree;
 
-        [SerializeField] protected BaseBehaviourNode previousNode;
-        [SerializeField] protected BaseBehaviourNode nextNode;
+        [SerializeField] protected string nodeName = "node";
+        
+        [SerializeField] protected NodeState state = NodeState.NotExecuted;
+        [SerializeField] protected ActionBool actionCallback = null;
+
+        [SerializeField] protected BaseBehaviourNode parentNode = null;
+        [SerializeField] protected BaseBehaviourNode childNode = null;
         #endregion
 
         #region Properties
@@ -33,11 +39,32 @@ namespace BehaviourTree
             set { state = value; }
         }
         #endregion
-
-        public BaseBehaviourNode(Action<bool> callback)
+        
+        public BaseBehaviourNode(ActionBool callback, string nName = "node", BaseBehaviourNode child = null)
         {
             this.actionCallback += callback;
+
+            this.nodeName = nName;
+            
+            if(child != null)
+                SetChild(child);
         }
+        
+        
+        protected void SetChild(BaseBehaviourNode child)
+        {
+            this.childNode = child;
+            child.parentNode = this;
+        }
+
+        
+        public abstract void OnStart();
+        
+        public abstract void OnEnter();
+        
+        public abstract void OnExit();
+
+        public abstract void OnReset();
         
         public abstract NodeState Process();
     }
