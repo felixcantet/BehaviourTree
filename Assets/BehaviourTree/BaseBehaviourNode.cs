@@ -61,6 +61,18 @@ namespace BehaviourTree
             child.parentNode = this;
         }
 
+        public bool HasChild()
+        {
+            return childNode != null;
+        }
+
+        public BaseBehaviourNode GetChild()
+        {
+            if (HasChild())
+                return this.childNode;
+
+            return null;
+        }
         
         public abstract void OnStart();
         

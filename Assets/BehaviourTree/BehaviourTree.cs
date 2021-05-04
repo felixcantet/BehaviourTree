@@ -25,6 +25,11 @@ namespace BehaviourTree
         public void InitGraph()
         {
             Debug.LogWarning("Initialize Behavior tree");
+
+            SearchAllNodes();
+            
+            Debug.Log($"There is {this.nodes.Count} nodes");
+            
             foreach (var n in nodes)
             {
                 n.tree = this;
@@ -34,6 +39,24 @@ namespace BehaviourTree
             LaunchGraph();
         }
 
+        public void AddChildNode(ref List<BaseBehaviourNode> tmp, BaseBehaviourNode tmpN)
+        {
+            tmp.Add(tmpN);
+            
+            if(tmpN.HasChild())
+                AddChildNode(ref tmp, tmpN.GetChild());
+        }
+        
+        public void SearchAllNodes()
+        {
+            this.nodes = new List<BaseBehaviourNode>();
+            this.nodes.Add(entryPoint);
+            
+            if(entryPoint.HasChild())
+                AddChildNode(ref this.nodes, entryPoint.GetChild());
+            
+        }
+        
         public void ResetGraph()
         {
             Debug.LogWarning("Reset Behavior Tree");
