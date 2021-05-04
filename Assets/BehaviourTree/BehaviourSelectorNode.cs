@@ -7,7 +7,8 @@ using UnityEngine;
 namespace BehaviourTree
 {
     /// <summary>
-    /// Sequence node is like an OR
+    /// Selector node is like an OR
+    /// Break when receive a Success or has run every node and receive failure
     /// </summary>
     [System.Serializable]
     public class BehaviourSelectorNode : BaseBehaviourNodeContainer

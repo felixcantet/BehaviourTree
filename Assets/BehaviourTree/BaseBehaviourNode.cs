@@ -15,12 +15,11 @@ namespace BehaviourTree
         Success
     }
     
-    public delegate NodeState ActionNodeState(); // delegate = pointeur sur fonction ==> Bloquant
-    // Peut etre faire un event
-    // ==> public event MonDelegate callback;
-    // Peut etre hériter de IEnumerator ?
-    // 
-    
+    public delegate NodeState ActionNodeState();
+
+    /// <summary>
+    /// Base class for every custom node we want to create
+    /// </summary>
     [System.Serializable]
     public abstract class BaseBehaviourNode
     {
@@ -44,6 +43,12 @@ namespace BehaviourTree
         }
         #endregion
         
+        /// <summary>
+        /// Create a node
+        /// </summary>
+        /// <param name="callback">Callback have to return Running, Success or Failure</param>
+        /// <param name="nName"></param>
+        /// <param name="child"></param>
         public BaseBehaviourNode(ActionNodeState callback, string nName = "node", BaseBehaviourNode child = null)
         {
             this.actionCallback += callback;
@@ -61,11 +66,19 @@ namespace BehaviourTree
             child.parentNode = this;
         }
 
+        /// <summary>
+        /// Check if this node has a child node
+        /// </summary>
+        /// <returns></returns>
         public bool HasChild()
         {
             return childNode != null;
         }
 
+        /// <summary>
+        /// Get the child node if exist
+        /// </summary>
+        /// <returns></returns>
         public BaseBehaviourNode GetChild()
         {
             if (HasChild())
@@ -73,6 +86,10 @@ namespace BehaviourTree
 
             return null;
         }
+        
+        /*
+         * These next functions are base function to the right run of the graph
+         */
         
         public abstract void OnStart();
         

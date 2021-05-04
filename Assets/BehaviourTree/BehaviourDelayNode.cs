@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 using UnityEngine;
 namespace BehaviourTree
 {
+    /// <summary>
+    /// Work like an action node.
+    /// After processing (return value != Running) wait a delay before return it's value
+    /// </summary>
     [System.Serializable]
     public class BehaviourDelayNode : BaseBehaviourNode
     {

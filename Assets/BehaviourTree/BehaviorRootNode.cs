@@ -9,6 +9,10 @@ using UnityEngine.Events;
 
 namespace BehaviourTree
 {
+    /// <summary>
+    /// This is the base root of every tree
+    /// this node process its child node at start
+    /// </summary>
     public class BehaviorRootNode : BaseBehaviourNode
     {
         public BehaviorRootNode(BaseBehaviourNode child) : base(null, "Root", child)

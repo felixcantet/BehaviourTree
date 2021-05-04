@@ -7,14 +7,22 @@ using UnityEngine.Assertions;
 
 namespace BehaviourTree
 {
+    /// <summary>
+    /// Classe principale qui stock l'arbre d'un agent
+    /// </summary>
     [System.Serializable]
     public class BehaviourTree
     {
+        // Contient toutes les nodes à la "surface" d'un arbre pour pouvoir les resets
         [SerializeField] private List<BaseBehaviourNode> nodes = new List<BaseBehaviourNode>();
         
         private BaseBehaviourNode entryPoint;
         private BaseBehaviourNode currentNode;
 
+        /// <summary>
+        /// Create the tree
+        /// </summary>
+        /// <param name="entryNode">The entry node have to be a Root node with a child</param>
         public BehaviourTree(BaseBehaviourNode entryNode)
         {
             this.nodes.Add(entryNode);
@@ -22,6 +30,11 @@ namespace BehaviourTree
             this.currentNode = this.entryPoint;
         }
         
+        /// <summary>
+        /// Initialize the graph
+        /// Search all nodes and "start" it
+        /// Finally launch the graph
+        /// </summary>
         public void InitGraph()
         {
             Debug.LogWarning("Initialize Behavior tree");
@@ -39,7 +52,8 @@ namespace BehaviourTree
             LaunchGraph();
         }
 
-        public void AddChildNode(ref List<BaseBehaviourNode> tmp, BaseBehaviourNode tmpN)
+        
+        private void AddChildNode(ref List<BaseBehaviourNode> tmp, BaseBehaviourNode tmpN)
         {
             tmp.Add(tmpN);
             
@@ -47,7 +61,7 @@ namespace BehaviourTree
                 AddChildNode(ref tmp, tmpN.GetChild());
         }
         
-        public void SearchAllNodes()
+        private void SearchAllNodes()
         {
             this.nodes = new List<BaseBehaviourNode>();
             this.nodes.Add(entryPoint);
@@ -57,6 +71,10 @@ namespace BehaviourTree
             
         }
         
+        /// <summary>
+        /// Reset the graph to the first node => Root
+        /// Re run the graph
+        /// </summary>
         public void ResetGraph()
         {
             Debug.LogWarning("Reset Behavior Tree");
@@ -69,23 +87,13 @@ namespace BehaviourTree
             
             LaunchGraph();
         }
-
-        /*
-         * - Le behavior tree a besoins de contenir que le node start
-         * - Cas de base Start => Selector
-         * - Si le node start = success ==> le tree s'arrete
-         * - Callback de start = nextNode.process()
-         * - Après le start il n'y a pas forcément de Selector derriere !
-         *     --> L'utilisateur doit pouvoir faire ce qu'il veut
-         * - Node = node avec des process differents
-         * - BT Toujours composé de Séquence et de sélector dans l'idée !
-         * - Node "TimeOut" ==> au bout de N tick je stop l'action
-         *     --> Stocker un start time + avoir un pseudo timer dans le Tree
-         * - Node Repeat ==> Repeat N fois
-         */
-
-        private const float delay = 1.0f / 60.0f;
         
+        
+        private const float delay = 1.0f / 60.0f;
+        /// <summary>
+        /// Launch the graph
+        /// When it finish, wait a small delay to Reset it
+        /// </summary>
         public async void LaunchGraph()
         {
             Debug.LogWarning("Launch Behavior Tree");

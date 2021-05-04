@@ -35,7 +35,12 @@ public class AIBehavior : MonoBehaviour
     public GameObject healFeedback;
     public FireBall spellFeedback;
     
-    
+    /// <summary>
+    /// Initialize IA
+    /// And it's behavior tree
+    /// At this path : Assets\Gameplay\Fighting\FightingAITree.png
+    /// You can find the visual of the Behavior tree
+    /// </summary>
     private void Awake()
     {
         this.agent = GetComponent<NavMeshAgent>();
@@ -97,7 +102,6 @@ public class AIBehavior : MonoBehaviour
         cacBehavior.Add(attackCacBehavior);
         
         attackBehavior.Add(cacBehavior);
-        
         mainBehavior.Add(attackBehavior);
         
         // Move Behaviour
@@ -154,7 +158,7 @@ public class AIBehavior : MonoBehaviour
 
         var dist = Vector3.Distance(this.target.position, this.transform.position);
         
-        return dist < this.spellRange && dist > 1.5f;
+        return dist < this.spellRange && dist > 2.0f;
     }
     
     public bool IsSpellAvailable()

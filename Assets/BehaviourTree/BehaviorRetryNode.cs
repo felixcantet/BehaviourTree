@@ -5,6 +5,9 @@ using UnityEngine.Assertions;
 
 namespace BehaviourTree
 {
+    /// <summary>
+    /// This node retry R times, when callback end running and return failure
+    /// </summary>
     public class BehaviorRetryNode : BaseBehaviourNode
     {
         [SerializeField] private int repeatNumber = 1;

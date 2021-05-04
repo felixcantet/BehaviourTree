@@ -6,7 +6,10 @@ using UnityEngine;
 
 namespace BehaviourTree
 {
-
+    /// <summary>
+    /// Basic action node
+    /// Call a callback when process
+    /// </summary>
     public class BehaviourActionNode : BaseBehaviourNode
     {
         public override void OnStart()

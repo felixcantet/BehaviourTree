@@ -6,7 +6,9 @@ using UnityEngine;
 
 namespace BehaviourTree
 {
-
+    /// <summary>
+    /// Basic node which stop after a delay
+    /// </summary>
     public class BehaviorTimeOutNode : BaseBehaviourNode
     {
         private float timeOutDelay = 5.0f;

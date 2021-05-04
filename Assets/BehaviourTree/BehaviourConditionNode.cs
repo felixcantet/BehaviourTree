@@ -6,6 +6,10 @@ using UnityEngine;
 
 namespace BehaviourTree
 {
+    /// <summary>
+    /// Basic condition node (like action node)
+    /// Call a callback when process
+    /// </summary>
     [System.Serializable]
     public class BehaviourConditionNode : BaseBehaviourNode
     {

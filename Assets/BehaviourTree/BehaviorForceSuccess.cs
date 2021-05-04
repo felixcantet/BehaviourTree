@@ -7,6 +7,9 @@ using UnityEngine.Events;
 
 namespace BehaviourTree
 {
+    /// <summary>
+    /// This node return, when the callback return an other value of Running, Success
+    /// </summary>
     public class BehaviorForceSuccess : BaseBehaviourNode
     {
         public BehaviorForceSuccess(ActionNodeState callback = null, string nName = "", BaseBehaviourNode child = null) : base(callback, "Force Success - " + nName, child)

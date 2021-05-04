@@ -8,6 +8,7 @@ namespace BehaviourTree
 {
     /// <summary>
     /// Sequence node is like an AND
+    /// Break when receive a Failure or has run every node and receive success
     /// </summary>
     [System.Serializable]
     public class BehaviourSequenceNode : BaseBehaviourNodeContainer

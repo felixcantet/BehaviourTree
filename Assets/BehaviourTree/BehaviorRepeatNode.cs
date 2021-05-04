@@ -6,7 +6,7 @@ using UnityEngine.Assertions;
 namespace BehaviourTree
 {
     /// <summary>
-    /// Tant que c'est Success je repeat
+    /// This node repeat R times, when callback end running and return Success
     /// </summary>
     public class BehaviorRepeatNode : BaseBehaviourNode
     {

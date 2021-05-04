@@ -5,7 +5,7 @@ using UnityEngine.AI;
 using System;
 using System.Linq;
 using BehaviourTree;
-using System.Threading.Tasks;
+
 public class IAPatrolController : MonoBehaviour
 {
     public BehaviourTree.BehaviourTree tree;
@@ -24,6 +24,10 @@ public class IAPatrolController : MonoBehaviour
     public List<Transform> waypoints;
     public int currentWayPoint;
     bool looseTarget = false;
+    
+    /// <summary>
+    /// You can the visual of the tree at : Asset\Gameplay\Infiltration\Diagram_Patrol.png
+    /// </summary>
     private void Awake()
     {
         // Find the closest waypoint
@@ -32,15 +36,15 @@ public class IAPatrolController : MonoBehaviour
 
         #region Setup Tree
 
-        // Le node d'entrée est un selector
+        // Le node d'entrï¿½e est un selector
         BehaviourSelectorNode entry = new BehaviourSelectorNode("Entry Node");
         
-        // On assigne le noeud d'entrée au Tree
+        // On assigne le noeud d'entrï¿½e au Tree
         this.tree = new BehaviourTree.BehaviourTree(entry);
-        // Le premier item du Selector est une séquence de recherche
+        // Le premier item du Selector est une sï¿½quence de recherche
         var searchSequence = new BehaviourSequenceNode(name = "Search Sequence");
         
-        // Nécessite que l'agent n'ai pas de target (il n'a pas trouvé le joueur)
+        // Nï¿½cessite que l'agent n'ai pas de target (il n'a pas trouvï¿½ le joueur)
         var condition = new BehaviourConditionNode(() =>
         {
             Debug.Log("Run Has Target Condition");
@@ -52,19 +56,19 @@ public class IAPatrolController : MonoBehaviour
         {
             this.DetectPlayer();
             Debug.Log("Detect Player Action");
-            // Renvoi Success si le joueur est trouvé
+            // Renvoi Success si le joueur est trouvï¿½
             return this.target != null ? NodeState.Success : NodeState.Failure;
         }, "Search Action");
 
-        // On ajoute la séquence au selector
+        // On ajoute la sï¿½quence au selector
         entry.Add(searchSequence);
-        // On ajoute les noeuds qui composent la sequence dans la séquence
+        // On ajoute les noeuds qui composent la sequence dans la sï¿½quence
         searchSequence.Add(condition);
         searchSequence.Add(searchAction);
 
-        // Le deuxième item est une sequence de mouvement
+        // Le deuxiï¿½me item est une sequence de mouvement
         var moveSequence = new BehaviourSequenceNode(name = "Move Sequence");
-        // On ajoute la séquence 
+        // On ajoute la sï¿½quence 
         entry.Add(moveSequence);
 
         // Requier que l'agent ai le player en target
@@ -73,16 +77,16 @@ public class IAPatrolController : MonoBehaviour
             return this.HasTarget() ? NodeState.Success : NodeState.Failure;
         }, name = "Has Target");
 
-        // On ajoute la condition en premier élément de la séquence
+        // On ajoute la condition en premier ï¿½lï¿½ment de la sï¿½quence
         moveSequence.Add(hasTarget);
-        // Si l'agent a une target, alors on il se déplace vers elle
+        // Si l'agent a une target, alors on il se dï¿½place vers elle
         var moveToAction = new BehaviourActionNode(() =>
         {
             this.agent.enabled = true;
             this.MoveTo(this.target.position);
             this.anim.SetBool("Move", true);
             var state = IsInAttackRange() ? NodeState.Success : NodeState.Running;
-            // Si on perd la targer de vue, on retourne Failure pour passer en état de recherche
+            // Si on perd la targer de vue, on retourne Failure pour passer en ï¿½tat de recherche
             if (!DetectPlayer())
             {
                 this.anim.SetTrigger("Search");
@@ -97,13 +101,13 @@ public class IAPatrolController : MonoBehaviour
         {
             return !this.IsInAttackRange() ? NodeState.Success : NodeState.Failure;
         }, name = "Stop Move");
-        // On ajoute les noeuds à la séquence
+        // On ajoute les noeuds ï¿½ la sï¿½quence
         moveSequence.Add(moveToAction);
         moveSequence.Add(invertInRangeCondition);
 
-        // Séquence permettant de gérer la situation où l'agent perd le joueur de vue
+        // Sï¿½quence permettant de gï¿½rer la situation oï¿½ l'agent perd le joueur de vue
         var looseTargetSequence = new BehaviourSequenceNode("Loose Target Event");
-        // Condition basé sur un flag remplit par l'état précédent
+        // Condition basï¿½ sur un flag remplit par l'ï¿½tat prï¿½cï¿½dent
         var looseTargetCondition = new BehaviourConditionNode(() =>
         {
             if (this.looseTarget)
@@ -112,7 +116,7 @@ public class IAPatrolController : MonoBehaviour
             }
             return NodeState.Failure;
         });
-        // On met l'agent en pause, il passe en état de recherche. Il attend 3 seconde dans cet état
+        // On met l'agent en pause, il passe en ï¿½tat de recherche. Il attend 3 seconde dans cet ï¿½tat
         var looseTargetAction = new BehaviourDelayNode(() =>
         {
             this.agent.enabled = false;
@@ -122,15 +126,15 @@ public class IAPatrolController : MonoBehaviour
             return NodeState.Success;
         }, delay: 3.0f);
 
-        // On ajoute les noeuds à la séquence et la séquence au selector
+        // On ajoute les noeuds ï¿½ la sï¿½quence et la sï¿½quence au selector
         looseTargetSequence.Add(looseTargetCondition);
         looseTargetSequence.Add(looseTargetAction);
         entry.Add(looseTargetSequence);
 
-        // Séquence d'attaque
+        // Sï¿½quence d'attaque
         var attackSequence = new BehaviourSequenceNode("Attack Sequence");
         entry.Add(attackSequence);
-        // Nécessite d'être dans le range du player
+        // Nï¿½cessite d'ï¿½tre dans le range du player
         var isInRangeCondition = new BehaviourConditionNode(() =>
         {
             return this.IsInAttackRange() ? NodeState.Success : NodeState.Failure;
@@ -149,7 +153,7 @@ public class IAPatrolController : MonoBehaviour
         }, name = "Attack Action");
         attackSequence.Add(attackAction);
 
-        // Délais de deux secondes après l'attaque
+        // Dï¿½lais de deux secondes aprï¿½s l'attaque
         var delayNode = new BehaviourDelayNode(() =>
         {
             this.anim.SetTrigger("Search");
@@ -157,7 +161,7 @@ public class IAPatrolController : MonoBehaviour
         }, 2.0f);
         attackSequence.Add(delayNode);
 
-        // Action Fallback de déplacement de Waypoint en waypoint
+        // Action Fallback de dï¿½placement de Waypoint en waypoint
         var moveToWayPoint = new BehaviourActionNode(() =>
         {
             this.agent.enabled = true;
@@ -241,41 +245,6 @@ public class IAPatrolController : MonoBehaviour
     {
         agent.SetDestination(target);
         // TODO : Set Animation
-    }
-
-    /// <summary>
-    /// Disable agent and force agent to turn over  for [degree] degrees
-    /// Trigger the action event when finish
-    /// </summary>
-    /// <param name="degree"></param>
-    /// <param name="action"></param>
-    /// <returns></returns>
-    public IEnumerator TurnOver(float degree = 360, Action onTurnFinished = null)
-    {
-        turnRoutineOutState = NodeState.Running;
-        var lastAgentState = this.agent.enabled;
-        this.agent.enabled = false;
-        float currentDegree = 0;
-        while (currentDegree < degree)
-        {
-            var rotation = Quaternion.AngleAxis(this.rotationSpeed * Time.deltaTime, Vector3.up);
-            currentDegree += rotationSpeed;
-            this.transform.rotation = rotation * this.transform.rotation;
-
-
-            yield return 0;
-            if (DetectPlayer())
-            {
-                Debug.Log("Player Found");
-                break;
-            }
-        }
-        // Trigger Event Finished
-        if (onTurnFinished != null)
-            onTurnFinished();
-        this.agent.enabled = lastAgentState;
-        this.turnRoutineOutState = NodeState.Success;
-        yield break;
     }
 
     /// <summary>
