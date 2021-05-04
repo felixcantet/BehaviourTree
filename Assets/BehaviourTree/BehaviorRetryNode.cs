@@ -7,7 +7,7 @@ namespace BehaviourTree
     {
         [SerializeField] private int repeatNumber = 1;
         
-        public BehaviorRetryNode(ActionBool callback, int repeatNumber, string nName = "node", BaseBehaviourNode child = null) : base(callback, nName, child)
+        public BehaviorRetryNode(ActionNodeState callback, int repeatNumber, string nName = "node", BaseBehaviourNode child = null) : base(callback, nName, child)
         {
             Assert.AreNotEqual(repeatNumber, 0, "You've set repeat number to 0. This is not possible !");
             this.repeatNumber = repeatNumber;
@@ -40,7 +40,7 @@ namespace BehaviourTree
 
             for (int i = 0; i < repeatNumber; i++)
             {
-                lastState = actionCallback() ? NodeState.Success : NodeState.Failure;
+                lastState = actionCallback();
                 if (lastState.Equals(NodeState.Success))
                     break;
             }

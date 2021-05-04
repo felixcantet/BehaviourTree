@@ -9,7 +9,7 @@ namespace BehaviourTree
 {
     public class BehaviorForceFailure : BaseBehaviourNode
     {
-        public BehaviorForceFailure(ActionBool callback = null, string nName = "", BaseBehaviourNode child = null) : base(callback, "Force Failure - " + nName, child)
+        public BehaviorForceFailure(ActionNodeState callback = null, string nName = "", BaseBehaviourNode child = null) : base(callback, "Force Failure - " + nName, child)
         {
             
         }
