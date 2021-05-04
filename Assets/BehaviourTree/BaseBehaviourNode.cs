@@ -14,7 +14,7 @@ namespace BehaviourTree
         Failure,
         Success
     }
-
+    
     public delegate NodeState ActionNodeState(); // delegate = pointeur sur fonction ==> Bloquant
     // Peut etre faire un event
     // ==> public event MonDelegate callback;

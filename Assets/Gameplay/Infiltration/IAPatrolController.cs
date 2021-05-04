@@ -5,6 +5,7 @@ using UnityEngine.AI;
 using System;
 using System.Linq;
 using BehaviourTree;
+using System.Threading.Tasks;
 public class IAPatrolController : MonoBehaviour
 {
     public BehaviourTree.BehaviourTree tree;
@@ -17,11 +18,15 @@ public class IAPatrolController : MonoBehaviour
     [SerializeField] Transform target;
     [SerializeField] float rotationSpeed = 10.0f;
     [SerializeField] float attackRange = 3;
-
+    [SerializeField] Animator anim;
+    Coroutine turnRoutine;
+    NodeState turnRoutineOutState = NodeState.Running;
+    public List<Transform> waypoints;
 
     private void Awake()
     {
         BehaviourSelectorNode entry = new BehaviourSelectorNode("Entry Node");
+        //var root = new BehaviorRootNode(entry);
         this.tree = new BehaviourTree.BehaviourTree(entry);
         var condition = new BehaviourConditionNode(() =>
         {
@@ -55,6 +60,7 @@ public class IAPatrolController : MonoBehaviour
         {
             this.agent.enabled = true;
             this.MoveTo(this.target.position);
+            this.anim.SetBool("Move", true);
             var state = IsInAttackRange() ? NodeState.Success : NodeState.Running;
             return state;
         });
@@ -68,12 +74,14 @@ public class IAPatrolController : MonoBehaviour
 
         var attackSequence = new BehaviourSequenceNode("Attack Sequence");
         entry.Add(attackSequence);
-        var isInRangeCondition = new BehaviourConditionNode(() => { 
+        var isInRangeCondition = new BehaviourConditionNode(() => {
             return this.IsInAttackRange() ? NodeState.Success : NodeState.Failure; }, 
             name = "In range Condition");
         attackSequence.Add(isInRangeCondition);
         var attackAction = new BehaviourActionNode(() =>
         {
+            this.anim.SetBool("Move", false);
+            this.anim.SetTrigger("Attack");
             this.agent.enabled = false;
             this.Attack();
 
@@ -81,9 +89,23 @@ public class IAPatrolController : MonoBehaviour
         }, name = "Attack Action");
         attackSequence.Add(attackAction);
 
-        var delayNode = new BehaviourDelayNode(2.0f);
+        var delayNode = new BehaviourDelayNode(() => {
+            this.anim.SetTrigger("Search");
+            return NodeState.Success;
+        }, 2.0f);
         attackSequence.Add(delayNode);
-        
+
+        var fallback = new BehaviorForceSuccess(() =>
+        {
+            Debug.Log("FALLBACK");
+            
+            if(turnRoutine == null)
+                turnRoutine = StartCoroutine(TurnOver());
+            
+            return turnRoutineOutState;
+        });
+        entry.Add(fallback);
+
         this.tree.InitGraph();
     }
 
@@ -145,19 +167,30 @@ public class IAPatrolController : MonoBehaviour
     /// <returns></returns>
     public IEnumerator TurnOver(float degree = 360, Action onTurnFinished = null)
     {
+        turnRoutineOutState = NodeState.Running;
+        var lastAgentState = this.agent.enabled;
         this.agent.enabled = false;
         float currentDegree = 0;
         while(currentDegree < degree)
         {
-            var rotation = Quaternion.AngleAxis(this.rotationSpeed, Vector3.up);
+            var rotation = Quaternion.AngleAxis(this.rotationSpeed * Time.deltaTime, Vector3.up);
             currentDegree += rotationSpeed;
             this.transform.rotation = rotation * this.transform.rotation;
+
+
             yield return 0;
+            if(DetectPlayer())
+            {
+                Debug.Log("Player Found");
+                break;
+            }
         }
         // Trigger Event Finished
         if(onTurnFinished != null)
             onTurnFinished();
-        this.agent.enabled = true;
+        this.agent.enabled = lastAgentState;
+        this.turnRoutineOutState = NodeState.Success;
+        yield break;
     }
 
     /// <summary>

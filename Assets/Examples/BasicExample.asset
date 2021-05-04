@@ -38,6 +38,9 @@ MonoBehaviour:
   - id: 21
   - id: 22
   - id: 23
+  - id: 24
+  - id: 25
+  - id: 26
   edges:
   - GUID: 04cee6c7-b233-40e1-b41a-31f6093f1482
     owner: {fileID: 11400000}
@@ -143,6 +146,14 @@ MonoBehaviour:
     outputFieldName: output
     inputPortIdentifier: 
     outputPortIdentifier: 
+  - GUID: 1cd87b3e-66b0-411c-b7a5-fd75b516fc4b
+    owner: {fileID: 11400000}
+    inputNodeGUID: 15d8ad03-04c1-447f-bc2d-f7792d272007
+    outputNodeGUID: d2030591-ce9a-4f25-9511-2d5f3ee65f3d
+    inputFieldName: obj
+    outputFieldName: output
+    inputPortIdentifier: 
+    outputPortIdentifier: 
   groups:
   - title: New Comment Block
     color: {r: 0, g: 0, b: 0, a: 0}
@@ -165,7 +176,8 @@ MonoBehaviour:
     size: {x: 300, y: 100}
     innerNodeGUIDs: []
   stackNodes:
-  - id: 24
+  - id: 27
+  - id: 28
   pinnedElements:
   - position:
       serializedVersion: 2
@@ -208,7 +220,7 @@ MonoBehaviour:
       serializedType: GraphProcessor.ProcessorView, com.alelievr.NodeGraphProcessor.Editor,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   exposedParameters:
-  - id: 25
+  - id: 29
   serializedParameterList:
   - guid: 
     name: 
@@ -219,7 +231,7 @@ MonoBehaviour:
       serializedValue: 
     input: 1
     settings:
-      id: 26
+      id: 30
   - guid: 
     name: 
     type: 
@@ -229,7 +241,7 @@ MonoBehaviour:
       serializedValue: 
     input: 1
     settings:
-      id: 26
+      id: 30
   - guid: 
     name: 
     type: 
@@ -239,7 +251,7 @@ MonoBehaviour:
       serializedValue: 
     input: 1
     settings:
-      id: 26
+      id: 30
   - guid: 
     name: 
     type: 
@@ -249,7 +261,7 @@ MonoBehaviour:
       serializedValue: 
     input: 1
     settings:
-      id: 26
+      id: 30
   - guid: 
     name: 
     type: 
@@ -259,7 +271,7 @@ MonoBehaviour:
       serializedValue: 
     input: 1
     settings:
-      id: 26
+      id: 30
   - guid: 
     name: 
     type: 
@@ -269,7 +281,7 @@ MonoBehaviour:
       serializedValue: 
     input: 1
     settings:
-      id: 26
+      id: 30
   - guid: 
     name: 
     type: 
@@ -279,7 +291,7 @@ MonoBehaviour:
       serializedValue: 
     input: 1
     settings:
-      id: 26
+      id: 30
   - guid: 
     name: 
     type: 
@@ -289,7 +301,7 @@ MonoBehaviour:
       serializedValue: 
     input: 1
     settings:
-      id: 26
+      id: 30
   - guid: 
     name: 
     type: 
@@ -299,7 +311,7 @@ MonoBehaviour:
       serializedValue: 
     input: 1
     settings:
-      id: 26
+      id: 30
   stickyNotes:
   - position:
       serializedVersion: 2
@@ -317,8 +329,8 @@ MonoBehaviour:
       height: 101
     title: New Sticky Note
     content: Write your text here
-  position: {x: 692, y: -105, z: 0}
-  scale: {x: 0.8695652, y: 0.8695652, z: 1}
+  position: {x: 1537, y: 266, z: 0}
+  scale: {x: 1.7490063, y: 1.7490063, z: 1}
   references:
     version: 1
     00000000:
@@ -433,8 +445,7 @@ MonoBehaviour:
         expanded: 1
         debug: 0
         nodeLock: 0
-        output: {fileID: 1636575971871760, guid: f78111bdbdeaf6644806fc49fcaf1d30,
-          type: 3}
+        output: {fileID: 1636575971871760, guid: f78111bdbdeaf6644806fc49fcaf1d30, type: 3}
     00000007:
       type: {class: FloatNode, ns: , asm: Assembly-CSharp}
       data:
@@ -750,6 +761,54 @@ MonoBehaviour:
         nodeLock: 0
         output: 0
     00000018:
+      type: {class: FloatNode, ns: , asm: Assembly-CSharp}
+      data:
+        nodeCustomName: 
+        GUID: 5269f3ca-7554-47e6-9229-654612869d8c
+        computeOrder: 24
+        position:
+          serializedVersion: 2
+          x: -576.77246
+          y: -72.883766
+          width: 102
+          height: 99
+        expanded: 0
+        debug: 0
+        nodeLock: 0
+        output: 5
+        input: 5
+    00000019:
+      type: {class: MultiAddNode, ns: , asm: Assembly-CSharp}
+      data:
+        nodeCustomName: 
+        GUID: d2030591-ce9a-4f25-9511-2d5f3ee65f3d
+        computeOrder: 25
+        position:
+          serializedVersion: 2
+          x: -550.95
+          y: -3.999981
+          width: 121
+          height: 99
+        expanded: 0
+        debug: 0
+        nodeLock: 0
+        output: 0
+    0000001A:
+      type: {class: ConditionalPrintNode, ns: , asm: Assembly-CSharp}
+      data:
+        nodeCustomName: 
+        GUID: 15d8ad03-04c1-447f-bc2d-f7792d272007
+        computeOrder: 26
+        position:
+          serializedVersion: 2
+          x: -348.16168
+          y: -27.498695
+          width: 170
+          height: 114
+        expanded: 0
+        debug: 0
+        nodeLock: 0
+    0000001B:
       type: {class: BaseStackNode, ns: GraphProcessor, asm: com.alelievr.NodeGraphProcessor.Runtime}
       data:
         position: {x: 914.0975, y: 6.5799994}
@@ -760,7 +819,17 @@ MonoBehaviour:
         - ffd2cf4b-87c3-42a6-9822-04bae7a5700b
         - 42eb43b8-ac7e-4f38-b49b-26ba1bc42732
         - e99da4fb-6a11-4b19-8594-f37f55d96114
-    00000019:
+    0000001C:
+      type: {class: BaseStackNode, ns: GraphProcessor, asm: com.alelievr.NodeGraphProcessor.Runtime}
+      data:
+        position: {x: -574.1481, y: -104.00002}
+        title: Stack
+        acceptDrop: 1
+        acceptNewNode: 1
+        nodeGUIDs:
+        - 5269f3ca-7554-47e6-9229-654612869d8c
+        - d2030591-ce9a-4f25-9511-2d5f3ee65f3d
+    0000001D:
       type: {class: FloatParameter, ns: GraphProcessor, asm: com.alelievr.NodeGraphProcessor.Runtime}
       data:
         guid: eb80df62-f248-4ec9-afd4-f9ed08bfaa16
@@ -772,11 +841,11 @@ MonoBehaviour:
           serializedValue: 
         input: 1
         settings:
-          id: 27
+          id: 31
         val: 0
-    0000001A:
+    0000001E:
       type: {class: , ns: , asm: }
-    0000001B:
+    0000001F:
       type: {class: FloatParameter/FloatSettings, ns: GraphProcessor, asm: com.alelievr.NodeGraphProcessor.Runtime}
       data:
         isHidden: 0

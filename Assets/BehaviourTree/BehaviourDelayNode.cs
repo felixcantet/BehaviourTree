@@ -15,7 +15,10 @@ namespace BehaviourTree
             this.delay = delay;
         }
 
-        
+        public BehaviourDelayNode(ActionNodeState callback, float delay, string nName = "node", BaseBehaviourNode child = null) : base(callback, nName, child)
+        {
+            this.delay = delay;
+        }
 
 
         public override void OnReset()
@@ -30,6 +33,7 @@ namespace BehaviourTree
 
         public override async Task<NodeState> Process()
         {
+            this.actionCallback();
             await Task.Delay(TimeSpan.FromSeconds(delay));
             return NodeState.Success;
         }
