@@ -26,46 +26,63 @@ public class IAPatrolController : MonoBehaviour
     bool looseTarget = false;
     private void Awake()
     {
+        // Find the closest waypoint
         var closer = waypoints.OrderBy(x => Vector3.Distance(x.position, this.transform.position)).First();
         this.currentWayPoint = this.waypoints.IndexOf(closer);
 
+        #region Setup Tree
+
+        // Le node d'entrée est un selector
         BehaviourSelectorNode entry = new BehaviourSelectorNode("Entry Node");
-        //var root = new BehaviorRootNode(entry);
+        
+        // On assigne le noeud d'entrée au Tree
         this.tree = new BehaviourTree.BehaviourTree(entry);
+        // Le premier item du Selector est une séquence de recherche
+        var searchSequence = new BehaviourSequenceNode(name = "Search Sequence");
+        
+        // Nécessite que l'agent n'ai pas de target (il n'a pas trouvé le joueur)
         var condition = new BehaviourConditionNode(() =>
         {
             Debug.Log("Run Has Target Condition");
             return !this.HasTarget() ? NodeState.Success : NodeState.Failure;
         }, name = "Has Target Condition");
 
-        var searchSequence = new BehaviourSequenceNode(name = "Search Sequence");
-
+        // Dans ce cas la, il va essayer de detecter le joueur
         var searchAction = new BehaviourActionNode(() =>
         {
             this.DetectPlayer();
             Debug.Log("Detect Player Action");
+            // Renvoi Success si le joueur est trouvé
             return this.target != null ? NodeState.Success : NodeState.Failure;
         }, "Search Action");
 
-
-
+        // On ajoute la séquence au selector
         entry.Add(searchSequence);
+        // On ajoute les noeuds qui composent la sequence dans la séquence
         searchSequence.Add(condition);
         searchSequence.Add(searchAction);
 
+        // Le deuxième item est une sequence de mouvement
         var moveSequence = new BehaviourSequenceNode(name = "Move Sequence");
+        // On ajoute la séquence 
         entry.Add(moveSequence);
+
+        // Requier que l'agent ai le player en target
         var hasTarget = new BehaviourConditionNode(() =>
         {
             return this.HasTarget() ? NodeState.Success : NodeState.Failure;
         }, name = "Has Target");
+
+        // On ajoute la condition en premier élément de la séquence
         moveSequence.Add(hasTarget);
+        // Si l'agent a une target, alors on il se déplace vers elle
         var moveToAction = new BehaviourActionNode(() =>
         {
             this.agent.enabled = true;
             this.MoveTo(this.target.position);
             this.anim.SetBool("Move", true);
             var state = IsInAttackRange() ? NodeState.Success : NodeState.Running;
+            // Si on perd la targer de vue, on retourne Failure pour passer en état de recherche
             if (!DetectPlayer())
             {
                 this.anim.SetTrigger("Search");
@@ -75,16 +92,18 @@ public class IAPatrolController : MonoBehaviour
             }
             return state;
         });
-
+        // Si le joueur est dans le range, on renvoi Failure pour passer en Behaviour attack, sinon on renvoi Success
         var invertInRangeCondition = new BehaviourConditionNode(() =>
         {
             return !this.IsInAttackRange() ? NodeState.Success : NodeState.Failure;
         }, name = "Stop Move");
-
+        // On ajoute les noeuds à la séquence
         moveSequence.Add(moveToAction);
         moveSequence.Add(invertInRangeCondition);
 
+        // Séquence permettant de gérer la situation où l'agent perd le joueur de vue
         var looseTargetSequence = new BehaviourSequenceNode("Loose Target Event");
+        // Condition basé sur un flag remplit par l'état précédent
         var looseTargetCondition = new BehaviourConditionNode(() =>
         {
             if (this.looseTarget)
@@ -93,7 +112,7 @@ public class IAPatrolController : MonoBehaviour
             }
             return NodeState.Failure;
         });
-
+        // On met l'agent en pause, il passe en état de recherche. Il attend 3 seconde dans cet état
         var looseTargetAction = new BehaviourDelayNode(() =>
         {
             this.agent.enabled = false;
@@ -103,17 +122,22 @@ public class IAPatrolController : MonoBehaviour
             return NodeState.Success;
         }, delay: 3.0f);
 
+        // On ajoute les noeuds à la séquence et la séquence au selector
         looseTargetSequence.Add(looseTargetCondition);
         looseTargetSequence.Add(looseTargetAction);
         entry.Add(looseTargetSequence);
+
+        // Séquence d'attaque
         var attackSequence = new BehaviourSequenceNode("Attack Sequence");
         entry.Add(attackSequence);
+        // Nécessite d'être dans le range du player
         var isInRangeCondition = new BehaviourConditionNode(() =>
         {
             return this.IsInAttackRange() ? NodeState.Success : NodeState.Failure;
-        },
-            name = "In range Condition");
+        }, name = "In range Condition");
+        
         attackSequence.Add(isInRangeCondition);
+        // Action d'attaque
         var attackAction = new BehaviourActionNode(() =>
         {
             this.anim.SetBool("Move", false);
@@ -125,6 +149,7 @@ public class IAPatrolController : MonoBehaviour
         }, name = "Attack Action");
         attackSequence.Add(attackAction);
 
+        // Délais de deux secondes après l'attaque
         var delayNode = new BehaviourDelayNode(() =>
         {
             this.anim.SetTrigger("Search");
@@ -132,10 +157,9 @@ public class IAPatrolController : MonoBehaviour
         }, 2.0f);
         attackSequence.Add(delayNode);
 
-        var wayPointMoveSequence = new BehaviourSequenceNode("Waypoint");
+        // Action Fallback de déplacement de Waypoint en waypoint
         var moveToWayPoint = new BehaviourActionNode(() =>
         {
-
             this.agent.enabled = true;
             this.anim.SetBool("Move", true);
             this.MoveTo(this.waypoints[currentWayPoint].position);
@@ -150,17 +174,7 @@ public class IAPatrolController : MonoBehaviour
         }, "Move To Current Waypoint");
 
         entry.Add(moveToWayPoint);
-        //var fallback = new BehaviorForceSuccess(() =>
-        //{
-        //    Debug.Log("FALLBACK");
-
-        //    if(turnRoutine == null)
-        //        turnRoutine = StartCoroutine(TurnOver());
-
-        //    return turnRoutineOutState;
-        //});
-        //entry.Add(fallback);
-
+        #endregion
         this.tree.InitGraph();
     }
 
