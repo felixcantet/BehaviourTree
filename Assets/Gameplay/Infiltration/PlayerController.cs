@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
     public Vector2 moveDirection;
     public Vector3 lookAt;
     public bool clic;
-
+    public CharacterController controller;
     public void Update()
     {
         this.PollInput();
@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
 
     public void Move()
     {
-        this.transform.position += Vector2ToVector3(this.moveDirection) * movementSpeed * Time.deltaTime;
+        this.controller.Move(Vector2ToVector3(this.moveDirection) * movementSpeed * Time.deltaTime);
     }
 
     public void Rotate()

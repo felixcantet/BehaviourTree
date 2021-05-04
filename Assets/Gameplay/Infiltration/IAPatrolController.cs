@@ -22,9 +22,13 @@ public class IAPatrolController : MonoBehaviour
     Coroutine turnRoutine;
     NodeState turnRoutineOutState = NodeState.Running;
     public List<Transform> waypoints;
-
+    public int currentWayPoint;
+    bool looseTarget = false;
     private void Awake()
     {
+        var closer = waypoints.OrderBy(x => Vector3.Distance(x.position, this.transform.position)).First();
+        this.currentWayPoint = this.waypoints.IndexOf(closer);
+
         BehaviourSelectorNode entry = new BehaviourSelectorNode("Entry Node");
         //var root = new BehaviorRootNode(entry);
         this.tree = new BehaviourTree.BehaviourTree(entry);
@@ -32,7 +36,7 @@ public class IAPatrolController : MonoBehaviour
         {
             Debug.Log("Run Has Target Condition");
             return !this.HasTarget() ? NodeState.Success : NodeState.Failure;
-        }, name="Has Target Condition");
+        }, name = "Has Target Condition");
 
         var searchSequence = new BehaviourSequenceNode(name = "Search Sequence");
 
@@ -43,7 +47,7 @@ public class IAPatrolController : MonoBehaviour
             return this.target != null ? NodeState.Success : NodeState.Failure;
         }, "Search Action");
 
-        
+
 
         entry.Add(searchSequence);
         searchSequence.Add(condition);
@@ -62,8 +66,16 @@ public class IAPatrolController : MonoBehaviour
             this.MoveTo(this.target.position);
             this.anim.SetBool("Move", true);
             var state = IsInAttackRange() ? NodeState.Success : NodeState.Running;
+            if (!DetectPlayer())
+            {
+                this.anim.SetTrigger("Search");
+                this.target = null;
+                this.looseTarget = true;
+                return NodeState.Failure;
+            }
             return state;
         });
+        
         var invertInRangeCondition = new BehaviourConditionNode(() =>
         {
             return !this.IsInAttackRange() ? NodeState.Success : NodeState.Failure;
@@ -72,10 +84,32 @@ public class IAPatrolController : MonoBehaviour
         moveSequence.Add(moveToAction);
         moveSequence.Add(invertInRangeCondition);
 
+        var looseTargetSequence = new BehaviourSequenceNode("Loose Target Event");
+        var looseTargetCondition = new BehaviourConditionNode(() =>
+        {
+            if (this.looseTarget)
+            {
+                return NodeState.Success;
+            }
+            return NodeState.Failure;
+        });
+
+        var looseTargetAction = new BehaviourDelayNode(() =>
+        {
+            this.looseTarget = false;
+            this.anim.SetTrigger("Search");
+            return NodeState.Success;
+        }, delay: 2.0f);
+
+        looseTargetSequence.Add(looseTargetCondition);
+        looseTargetSequence.Add(looseTargetAction);
+
         var attackSequence = new BehaviourSequenceNode("Attack Sequence");
         entry.Add(attackSequence);
-        var isInRangeCondition = new BehaviourConditionNode(() => {
-            return this.IsInAttackRange() ? NodeState.Success : NodeState.Failure; }, 
+        var isInRangeCondition = new BehaviourConditionNode(() =>
+        {
+            return this.IsInAttackRange() ? NodeState.Success : NodeState.Failure;
+        },
             name = "In range Condition");
         attackSequence.Add(isInRangeCondition);
         var attackAction = new BehaviourActionNode(() =>
@@ -89,22 +123,41 @@ public class IAPatrolController : MonoBehaviour
         }, name = "Attack Action");
         attackSequence.Add(attackAction);
 
-        var delayNode = new BehaviourDelayNode(() => {
+        var delayNode = new BehaviourDelayNode(() =>
+        {
             this.anim.SetTrigger("Search");
             return NodeState.Success;
         }, 2.0f);
         attackSequence.Add(delayNode);
 
-        var fallback = new BehaviorForceSuccess(() =>
+        var wayPointMoveSequence = new BehaviourSequenceNode("Waypoint");
+        var moveToWayPoint = new BehaviourActionNode(() =>
         {
-            Debug.Log("FALLBACK");
             
-            if(turnRoutine == null)
-                turnRoutine = StartCoroutine(TurnOver());
-            
-            return turnRoutineOutState;
-        });
-        entry.Add(fallback);
+            this.agent.enabled = true;
+            this.anim.SetBool("Move", true);
+            this.MoveTo(this.waypoints[currentWayPoint].position);
+            if (this.DetectPlayer()) { return NodeState.Success; }
+            if (agent.remainingDistance < 1.0f)
+            {
+                this.currentWayPoint++;
+                this.currentWayPoint %= this.waypoints.Count;
+                return NodeState.Success;
+            }
+            return NodeState.Running;
+        }, "Move To Current Waypoint");
+
+        entry.Add(moveToWayPoint);
+        //var fallback = new BehaviorForceSuccess(() =>
+        //{
+        //    Debug.Log("FALLBACK");
+
+        //    if(turnRoutine == null)
+        //        turnRoutine = StartCoroutine(TurnOver());
+
+        //    return turnRoutineOutState;
+        //});
+        //entry.Add(fallback);
 
         this.tree.InitGraph();
     }
@@ -147,7 +200,7 @@ public class IAPatrolController : MonoBehaviour
         return false;
 
     }
-    
+
     /// <summary>
     /// Set the navmesh agent destination to [target] position
     /// </summary>
@@ -171,7 +224,7 @@ public class IAPatrolController : MonoBehaviour
         var lastAgentState = this.agent.enabled;
         this.agent.enabled = false;
         float currentDegree = 0;
-        while(currentDegree < degree)
+        while (currentDegree < degree)
         {
             var rotation = Quaternion.AngleAxis(this.rotationSpeed * Time.deltaTime, Vector3.up);
             currentDegree += rotationSpeed;
@@ -179,14 +232,14 @@ public class IAPatrolController : MonoBehaviour
 
 
             yield return 0;
-            if(DetectPlayer())
+            if (DetectPlayer())
             {
                 Debug.Log("Player Found");
                 break;
             }
         }
         // Trigger Event Finished
-        if(onTurnFinished != null)
+        if (onTurnFinished != null)
             onTurnFinished();
         this.agent.enabled = lastAgentState;
         this.turnRoutineOutState = NodeState.Success;
@@ -211,9 +264,9 @@ public class IAPatrolController : MonoBehaviour
     public bool DetectPlayer()
     {
         List<Transform> tr;
-        if(this.DetectLineOfSight(out tr))
+        if (this.DetectLineOfSight(out tr))
         {
-            var player = tr.Where(x => x.CompareTag("Player")).First();
+            var player = tr.Where(x => x.CompareTag("Player")).FirstOrDefault();
             if (player)
             {
                 this.target = player;

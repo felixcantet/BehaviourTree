@@ -33,9 +33,21 @@ namespace BehaviourTree
 
         public override async Task<NodeState> Process()
         {
-            this.actionCallback();
+            OnEnter();
+
+            do
+            {
+                Debug.Log($"Proccessing {nodeName}");
+                this.state = actionCallback();
+                await Task.Delay(TimeSpan.FromSeconds(Time.deltaTime));
+
+            } while (this.state.Equals(NodeState.Running));
             await Task.Delay(TimeSpan.FromSeconds(delay));
-            return NodeState.Success;
+            //if(this.state != NodeState.Running)
+
+            OnExit();
+
+            return this.state;
         }
 
         protected override void OnEnter()
