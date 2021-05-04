@@ -14,7 +14,7 @@ namespace BehaviourTree
         Success
     }
 
-    public delegate bool ActionBool(); // delegate = pointeur sur fonction ==> Bloquant
+    public delegate NodeState ActionNodeState(); // delegate = pointeur sur fonction ==> Bloquant
     // Peut etre faire un event
     // ==> public event MonDelegate callback;
     // Peut etre hériter de IEnumerator ?
@@ -29,7 +29,7 @@ namespace BehaviourTree
         [SerializeField] protected string nodeName = "node";
         
         [SerializeField] protected NodeState state = NodeState.NotExecuted;
-        [SerializeField] protected ActionBool actionCallback = null;
+        [SerializeField] protected ActionNodeState actionCallback = null;
 
         [SerializeField] protected BaseBehaviourNode parentNode = null;
         [SerializeField] protected BaseBehaviourNode childNode = null;
@@ -43,7 +43,7 @@ namespace BehaviourTree
         }
         #endregion
         
-        public BaseBehaviourNode(ActionBool callback, string nName = "node", BaseBehaviourNode child = null)
+        public BaseBehaviourNode(ActionNodeState callback, string nName = "node", BaseBehaviourNode child = null)
         {
             this.actionCallback += callback;
 

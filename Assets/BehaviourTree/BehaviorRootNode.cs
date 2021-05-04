@@ -11,7 +11,7 @@ namespace BehaviourTree
     {
         public BehaviorRootNode(BaseBehaviourNode child) : base(null, "Root", child)
         {
-            this.actionCallback = () => !child.Process().Equals(NodeState.Failure);
+            this.actionCallback += child.Process;
         }
 
         public override void OnStart()
@@ -37,7 +37,7 @@ namespace BehaviourTree
 
         public override NodeState Process()
         {
-            this.state = actionCallback() ? NodeState.Success : NodeState.Failure;
+            this.state = actionCallback();
             if(this.state != NodeState.Running)
                 OnExit();
             return this.state;

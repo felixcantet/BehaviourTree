@@ -8,7 +8,7 @@ namespace BehaviourTree
 {
     public class BehaviorForceSuccess : BaseBehaviourNode
     {
-        public BehaviorForceSuccess(ActionBool callback = null, string nName = "", BaseBehaviourNode child = null) : base(callback, "Force Success - " + nName, child)
+        public BehaviorForceSuccess(ActionNodeState callback = null, string nName = "", BaseBehaviourNode child = null) : base(callback, "Force Success - " + nName, child)
         {
             
         }

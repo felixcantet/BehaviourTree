@@ -26,7 +26,7 @@ public class IAPatrolController : MonoBehaviour
         var condition = new BehaviourConditionNode(() =>
         {
             Debug.Log("Run Has Target Condition");
-            return !this.HasTarget();
+            return !this.HasTarget() ? NodeState.Success : NodeState.Failure;
         }, name="Has Target Condition");
 
         var searchSequence = new BehaviourSequenceNode(name = "Search Sequence");
@@ -35,7 +35,7 @@ public class IAPatrolController : MonoBehaviour
         {
             this.DetectPlayer();
             Debug.Log("Detect Player Action");
-            return this.target != null;
+            return this.target != null ? NodeState.Success : NodeState.Failure;
         }, "Search Action");
 
         
@@ -48,18 +48,18 @@ public class IAPatrolController : MonoBehaviour
         entry.Add(moveSequence);
         var hasTarget = new BehaviourConditionNode(() =>
         {
-            return this.HasTarget();
+            return this.HasTarget() ? NodeState.Success : NodeState.Failure;
         }, name = "Has Target");
         moveSequence.Add(hasTarget);
         var moveToAction = new BehaviorForceSuccess(() =>
         {
             this.agent.enabled = true;
             this.MoveTo(this.target.position);
-            return true;
+            return NodeState.Success;
         });
         var invertInRangeCondition = new BehaviourConditionNode(() =>
         {
-            return !this.IsInAttackRange();
+            return !this.IsInAttackRange() ? NodeState.Success : NodeState.Failure;
         }, name = "Stop Move");
         moveSequence.Add(moveToAction);
         moveSequence.Add(invertInRangeCondition);
@@ -67,7 +67,7 @@ public class IAPatrolController : MonoBehaviour
         var attackSequence = new BehaviourSequenceNode("Attack Sequence");
         entry.Add(attackSequence);
         var isInRangeCondition = new BehaviourConditionNode(() => { 
-            return this.IsInAttackRange(); }, 
+            return this.IsInAttackRange() ? NodeState.Success : NodeState.Failure; }, 
             name = "In range Condition");
         attackSequence.Add(isInRangeCondition);
         var attackAction = new BehaviourActionNode(() =>
@@ -75,7 +75,7 @@ public class IAPatrolController : MonoBehaviour
             this.agent.enabled = false;
             this.Attack();
 
-            return true;
+            return NodeState.Success;
         }, name = "Attack Action");
         attackSequence.Add(attackAction);
     }

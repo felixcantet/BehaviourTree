@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -28,6 +29,8 @@ namespace BehaviourTree
                 n.OnStart();
             }
 
+            //TestTaskInsteadOfCoroutine();
+            
             LaunchGraph();
         }
 
@@ -62,10 +65,56 @@ namespace BehaviourTree
             
             Assert.AreNotEqual(result, NodeState.Failure, "Result is failure in Behavior Tree");
             
-            if(!currentNode.State.Equals(NodeState.Running))
-                ResetGraph();
+            //if(!currentNode.State.Equals(NodeState.Running))
+            //    ResetGraph();
+        }
+
+        public async Task<NodeState> TestTaskInsteadOfCoroutine2()
+        {
+            //var tmp = MyTask();
+            //await Task.WhenAny(tmp, Task.Delay((10)));
+            var myInt = 0;
+
+            while (myInt < 10)
+            {
+                await Task.Delay(1000);
+                myInt++;
+                Debug.Log("Delay 100 ms " + myInt);
+            }
+            
+            Debug.Log("On a fini la task !!! " + myInt);
+            
+            return NodeState.Failure;
+        }
+
+        public void callback()
+        {
+            Debug.Log("Ceci est un callback de test !");    
         }
         
-        
+        public async Task<NodeState> TestTaskInsteadOfCoroutine()
+        {
+            //var tmp = MyTask();
+            //await Task.WhenAny(tmp, Task.Delay((10)));
+            var myInt = 0;
+            var st = NodeState.Running;
+            
+            while (st.Equals(NodeState.Running))
+            {
+                await Task.Delay(1000);
+                myInt++;
+                
+                callback();
+                
+                if (myInt >= 5)
+                    st = NodeState.Success;
+                
+                Debug.Log("Delay 100 ms " + myInt + " et mon etat = " + st);
+            }
+            
+            Debug.Log(st + " On a fini la task !!! " + myInt);
+            
+            return st;
+        }
     }
 }

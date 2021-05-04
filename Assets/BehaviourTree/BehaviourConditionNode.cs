@@ -31,7 +31,7 @@ namespace BehaviourTree
 
         public override NodeState Process()
         {
-            this.state = actionCallback() ? NodeState.Success : NodeState.Failure;
+            this.state = actionCallback();
             
             if(this.state != NodeState.Running)
                 OnExit();
@@ -39,7 +39,7 @@ namespace BehaviourTree
             return this.state;
         }
 
-        public BehaviourConditionNode(ActionBool callback, string nName = "node", BaseBehaviourNode child = null) : base(callback, nName, child)
+        public BehaviourConditionNode(ActionNodeState callback, string nName = "node", BaseBehaviourNode child = null) : base(callback, nName, child)
         {
         }
     }
