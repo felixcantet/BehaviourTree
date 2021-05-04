@@ -45,7 +45,7 @@ namespace BehaviourTree
                 await Task.Delay(TimeSpan.FromSeconds(Time.deltaTime));
 
                 currentDelay += Time.deltaTime;
-                Debug.Log($"Delay for the node {nodeName} is {currentDelay}");
+                Debug.Log($"Delay for the node {nodeName} is {currentDelay} // {this.timeOutDelay}");
 
             } while (this.state.Equals(NodeState.Running) && currentDelay < this.timeOutDelay);
 

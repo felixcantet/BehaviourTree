@@ -50,8 +50,8 @@ namespace BehaviourTree
 
             await Task.WhenAll(tsk);
             
-            Assert.AreEqual(tsk.Result, NodeState.Running, $"The result in the root node is Running .. {tsk.Result}");
-            Assert.AreEqual(tsk.Result, NodeState.Failure, $"The result in the root node is Failure .. {tsk.Result}");
+            Assert.AreNotEqual(tsk.Result, NodeState.Running, $"The result in the root node is Running .. {tsk.Result}");
+            Assert.AreNotEqual(tsk.Result, NodeState.Failure, $"The result in the root node is Failure .. {tsk.Result}");
 
             this.state = tsk.Result;
             
