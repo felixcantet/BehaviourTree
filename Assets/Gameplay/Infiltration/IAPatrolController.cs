@@ -60,7 +60,7 @@ public class IAPatrolController : MonoBehaviour
             return this.HasTarget() ? NodeState.Success : NodeState.Failure;
         }, name = "Has Target");
         moveSequence.Add(hasTarget);
-        var moveToAction = new BehaviorForceSuccess(() =>
+        var moveToAction = new BehaviourActionNode(() =>
         {
             this.agent.enabled = true;
             this.MoveTo(this.target.position);
@@ -96,7 +96,9 @@ public class IAPatrolController : MonoBehaviour
 
         var looseTargetAction = new BehaviourDelayNode(() =>
         {
+            this.agent.enabled = false;
             this.looseTarget = false;
+            this.anim.SetBool("Move", false);
             this.anim.SetTrigger("Search");
             return NodeState.Success;
         }, delay: 3.0f);
