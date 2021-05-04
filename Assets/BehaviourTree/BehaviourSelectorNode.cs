@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace BehaviourTree
@@ -16,12 +17,12 @@ namespace BehaviourTree
             base.OnStart();
         }
 
-        public override void OnEnter()
+        protected override void OnEnter()
         {
             this.state = NodeState.Running;
         }
 
-        public override void OnExit()
+        protected override void OnExit()
         {
             Debug.Log($"Selector {nodeName} On Exit()");
             //throw new NotImplementedException();
@@ -32,22 +33,26 @@ namespace BehaviourTree
             base.OnReset();
         }
         
-        public override NodeState Process()
+        public override async Task<NodeState> Process()
         {
             NodeState currentExecutedNodeStateResult = this.state;
+            
+            OnEnter();
+            
             foreach (var n in nodes)
             {
-                currentExecutedNodeStateResult = n.Process();
+                do
+                {
+                    var tsk = n.Process();
+                    await Task.WhenAll(tsk);
+                    currentExecutedNodeStateResult = tsk.Result;
+                    
+                } while (currentExecutedNodeStateResult.Equals(NodeState.Running));
                 
                 if (currentExecutedNodeStateResult.Equals(NodeState.Success))
                 {
                     this.state = currentExecutedNodeStateResult;
-                    Debug.Log($"Selector {nodeName} : Success");
-                    
-                    if(this.state != NodeState.Running)
-                        OnExit();
-                    
-                    return this.state;
+                    break;
                 }
             }
             
@@ -55,8 +60,7 @@ namespace BehaviourTree
             
             Debug.LogWarning($"Selector {nodeName} : {this.state.ToString()}");
 
-            if(this.state != NodeState.Running)
-                OnExit();
+            OnExit();
             
             return this.state;
         }

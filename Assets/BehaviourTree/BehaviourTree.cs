@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -29,8 +30,6 @@ namespace BehaviourTree
                 n.OnStart();
             }
 
-            //TestTaskInsteadOfCoroutine();
-            
             LaunchGraph();
         }
 
@@ -41,6 +40,7 @@ namespace BehaviourTree
                 n.OnReset();
 
             this.currentNode = this.entryPoint;
+            
             LaunchGraph();
         }
 
@@ -57,16 +57,21 @@ namespace BehaviourTree
          *     --> Stocker un start time + avoir un pseudo timer dans le Tree
          * - Node Repeat ==> Repeat N fois
          */
+
+        private const float delay = 1.0f / 60.0f;
         
-        public void LaunchGraph()
+        public async void LaunchGraph()
         {
-            currentNode.OnEnter();
             var result = currentNode.Process();
+
+            await Task.WhenAll(result);
             
-            Assert.AreNotEqual(result, NodeState.Failure, "Result is failure in Behavior Tree");
+            Assert.AreNotEqual(result.Result, NodeState.Running, "Result is Running in Behavior Tree");
+            Assert.AreNotEqual(result.Result, NodeState.Failure, "Result is failure in Behavior Tree");
+
+            await Task.Delay(TimeSpan.FromSeconds(delay));
             
-            //if(!currentNode.State.Equals(NodeState.Running))
-            //    ResetGraph();
+            ResetGraph();
         }
 
         public async Task<NodeState> TestTaskInsteadOfCoroutine2()

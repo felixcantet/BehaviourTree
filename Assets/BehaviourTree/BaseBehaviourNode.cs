@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -63,12 +64,12 @@ namespace BehaviourTree
         
         public abstract void OnStart();
         
-        public abstract void OnEnter();
+        protected abstract void OnEnter();
         
-        public abstract void OnExit();
+        protected abstract void OnExit();
 
         public abstract void OnReset();
-        
-        public abstract NodeState Process();
+
+        public abstract Task<NodeState> Process();
     }
 }

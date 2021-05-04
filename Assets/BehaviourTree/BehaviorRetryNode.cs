@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace BehaviourTree
@@ -18,12 +20,12 @@ namespace BehaviourTree
             
         }
 
-        public override void OnEnter()
+        protected override void OnEnter()
         {
             this.state = NodeState.Running;
         }
 
-        public override void OnExit()
+        protected override void OnExit()
         {
             Debug.Log($"{nodeName} On Exit()");
             //throw new NotImplementedException();
@@ -34,19 +36,28 @@ namespace BehaviourTree
             this.state = NodeState.NotExecuted;
         }
         
-        public override NodeState Process()
+        public override async Task<NodeState> Process()
         {
             NodeState lastState = this.state;
 
+            OnEnter();
+            
             for (int i = 0; i < repeatNumber; i++)
             {
-                lastState = actionCallback();
+                do
+                {
+                    lastState = actionCallback();
+                    await Task.Delay(TimeSpan.FromSeconds(Time.deltaTime));
+                
+                } while (lastState.Equals(NodeState.Running));
+                
                 if (lastState.Equals(NodeState.Success))
                     break;
             }
 
             this.state = lastState;
             OnExit();
+            
             return this.state;
         }
     }

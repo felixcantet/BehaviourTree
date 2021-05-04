@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GraphProcessor;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine.Assertions;
 
 namespace BehaviourTree
@@ -36,11 +37,11 @@ namespace BehaviourTree
                 n.OnReset();
         }
 
-        public abstract override void OnEnter();
+        protected abstract override void OnEnter();
 
-        public  abstract override void OnExit();
+        protected abstract override void OnExit();
 
-        public  abstract override NodeState Process();
+        public abstract override Task<NodeState> Process();
 
         
         public BaseBehaviourNodeContainer(string nName = "node", BaseBehaviourNode child = null) : base(null, nName, child)

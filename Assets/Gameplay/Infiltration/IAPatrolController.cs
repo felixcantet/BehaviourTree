@@ -78,12 +78,14 @@ public class IAPatrolController : MonoBehaviour
             return NodeState.Success;
         }, name = "Attack Action");
         attackSequence.Add(attackAction);
+        
+        
+        this.tree.InitGraph();
     }
 
     private void Update()
     {
-        //this.tree.InitGraph();
-        this.tree.LaunchGraph();
+        //this.tree.LaunchGraph();
     }
 
     bool HasTarget()

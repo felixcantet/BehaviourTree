@@ -2,7 +2,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.Events;
 
 namespace BehaviourTree
@@ -11,7 +13,7 @@ namespace BehaviourTree
     {
         public BehaviorRootNode(BaseBehaviourNode child) : base(null, "Root", child)
         {
-            this.actionCallback += child.Process;
+            //this.actionCallback += child.Process;
         }
 
         public override void OnStart()
@@ -19,12 +21,12 @@ namespace BehaviourTree
             
         }
 
-        public override void OnEnter()
+        protected override void OnEnter()
         {
             this.state = NodeState.Running;
         }
 
-        public override void OnExit()
+        protected override void OnExit()
         {
             Debug.Log($"{nodeName} On Exit()");
             //throw new NotImplementedException();
@@ -35,11 +37,25 @@ namespace BehaviourTree
             this.state = NodeState.NotExecuted;
         }
 
-        public override NodeState Process()
+        public override async Task<NodeState> Process()
         {
-            this.state = actionCallback();
-            if(this.state != NodeState.Running)
-                OnExit();
+            // this.state = actionCallback();
+            // if(this.state != NodeState.Running)
+            //     OnExit();
+            
+            OnEnter();
+            
+            var tsk = childNode.Process();
+
+            await Task.WhenAll(tsk);
+            
+            Assert.AreEqual(tsk.Result, NodeState.Running, $"The result in the root node is Running .. {tsk.Result}");
+            Assert.AreEqual(tsk.Result, NodeState.Failure, $"The result in the root node is Failure .. {tsk.Result}");
+
+            this.state = tsk.Result;
+            
+            OnExit();
+            
             return this.state;
         }
     }
