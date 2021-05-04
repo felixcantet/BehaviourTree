@@ -75,7 +75,7 @@ public class IAPatrolController : MonoBehaviour
             }
             return state;
         });
-        
+
         var invertInRangeCondition = new BehaviourConditionNode(() =>
         {
             return !this.IsInAttackRange() ? NodeState.Success : NodeState.Failure;
@@ -99,11 +99,11 @@ public class IAPatrolController : MonoBehaviour
             this.looseTarget = false;
             this.anim.SetTrigger("Search");
             return NodeState.Success;
-        }, delay: 2.0f);
+        }, delay: 3.0f);
 
         looseTargetSequence.Add(looseTargetCondition);
         looseTargetSequence.Add(looseTargetAction);
-
+        entry.Add(looseTargetSequence);
         var attackSequence = new BehaviourSequenceNode("Attack Sequence");
         entry.Add(attackSequence);
         var isInRangeCondition = new BehaviourConditionNode(() =>
@@ -133,7 +133,7 @@ public class IAPatrolController : MonoBehaviour
         var wayPointMoveSequence = new BehaviourSequenceNode("Waypoint");
         var moveToWayPoint = new BehaviourActionNode(() =>
         {
-            
+
             this.agent.enabled = true;
             this.anim.SetBool("Move", true);
             this.MoveTo(this.waypoints[currentWayPoint].position);
@@ -198,6 +198,22 @@ public class IAPatrolController : MonoBehaviour
         if (transform.Count > 0)
             return true;
         return false;
+
+    }
+
+
+    void OnDrawGizmosSelected()
+    {
+        float totalFOV = coneAngle * 2;// 70.0f;
+        float rayRange = visionMaxDistance;
+        float halfFOV = totalFOV / 2.0f;
+        Quaternion leftRayRotation = Quaternion.AngleAxis(-halfFOV, Vector3.up);
+        Quaternion rightRayRotation = Quaternion.AngleAxis(halfFOV, Vector3.up);
+        Vector3 leftRayDirection = leftRayRotation * transform.forward;
+        Vector3 rightRayDirection = rightRayRotation * transform.forward;
+        Gizmos.color = Color.blue;
+        Gizmos.DrawRay(transform.position, leftRayDirection * rayRange);
+        Gizmos.DrawRay(transform.position, rightRayDirection * rayRange);
 
     }
 
