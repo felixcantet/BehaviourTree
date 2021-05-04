@@ -55,12 +55,14 @@ public class IAPatrolController : MonoBehaviour
         {
             this.agent.enabled = true;
             this.MoveTo(this.target.position);
-            return NodeState.Success;
+            var state = IsInAttackRange() ? NodeState.Success : NodeState.Running;
+            return state;
         });
         var invertInRangeCondition = new BehaviourConditionNode(() =>
         {
             return !this.IsInAttackRange() ? NodeState.Success : NodeState.Failure;
         }, name = "Stop Move");
+
         moveSequence.Add(moveToAction);
         moveSequence.Add(invertInRangeCondition);
 
@@ -78,7 +80,9 @@ public class IAPatrolController : MonoBehaviour
             return NodeState.Success;
         }, name = "Attack Action");
         attackSequence.Add(attackAction);
-        
+
+        var delayNode = new BehaviourDelayNode(2.0f);
+        attackSequence.Add(delayNode);
         
         this.tree.InitGraph();
     }
