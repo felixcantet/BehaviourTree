@@ -45,6 +45,7 @@ namespace BehaviourTree
             
             OnEnter();
             
+            Debug.Log($"Proccessing {nodeName}");
             var tsk = childNode.Process();
 
             await Task.WhenAll(tsk);

@@ -45,6 +45,8 @@ namespace BehaviourTree
 
             OnEnter();
             
+            Debug.Log($"Proccessing {nodeName}");
+
             for (int i = 0; i < repeatNumber; i++)
             {
                 do

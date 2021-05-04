@@ -41,6 +41,7 @@ namespace BehaviourTree
             
             do
             {
+                Debug.Log($"Proccessing {nodeName}");
                 this.state = actionCallback();
                 await Task.Delay(TimeSpan.FromSeconds(Time.deltaTime));
                 

@@ -39,6 +39,8 @@ namespace BehaviourTree
             
             OnEnter();
             
+            Debug.Log($"Proccessing {nodeName}");
+
             foreach (var n in nodes)
             {
                 do

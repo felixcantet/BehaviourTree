@@ -24,6 +24,7 @@ namespace BehaviourTree
         
         public void InitGraph()
         {
+            Debug.LogWarning("Initialize Behavior tree");
             foreach (var n in nodes)
             {
                 n.tree = this;
@@ -35,6 +36,8 @@ namespace BehaviourTree
 
         public void ResetGraph()
         {
+            Debug.LogWarning("Reset Behavior Tree");
+            
             // Set all nodes to NotExecuted state
             foreach (var n in nodes)
                 n.OnReset();
@@ -62,18 +65,23 @@ namespace BehaviourTree
         
         public async void LaunchGraph()
         {
+            Debug.LogWarning("Launch Behavior Tree");
+            
             var result = currentNode.Process();
 
             await Task.WhenAll(result);
+            
+            Debug.LogWarning("Graph as reach the end potential node");
             
             Assert.AreNotEqual(result.Result, NodeState.Running, "Result is Running in Behavior Tree");
             Assert.AreNotEqual(result.Result, NodeState.Failure, "Result is failure in Behavior Tree");
 
             await Task.Delay(TimeSpan.FromSeconds(delay));
-            
+
             ResetGraph();
         }
 
+        #region Test Function
         public async Task<NodeState> TestTaskInsteadOfCoroutine2()
         {
             //var tmp = MyTask();
@@ -121,5 +129,6 @@ namespace BehaviourTree
             
             return st;
         }
+        #endregion
     }
 }
